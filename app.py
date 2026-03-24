@@ -9,7 +9,7 @@ def calcola_turni(is_pasqua, assenze):
     dipendenti = ["Carmen", "Cinzia", "Monia", "Debora", "Sara T", "Monica", "Alessia", "Nicola", "Giovanna"]
     giorni = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"]
     
-    # [ID, Nome, Ore, is_M, is_P, is_Spezzato, inizia_6]
+   # [ID, Nome, Ore, is_M, is_P, is_Spezzato, inizia_6]
     turni = [
         (0, "RIPOSO", 0, 0, 0, 0, 0),
         (1, "06:00-13:00", 7, 1, 0, 0, 1),
@@ -18,7 +18,7 @@ def calcola_turni(is_pasqua, assenze):
         (4, "06:00-14:00", 8, 1, 0, 0, 1),
         (5, "07:00-15:00", 8, 1, 0, 0, 0),
         (6, "13:00-20:00", 7, 0, 1, 0, 0),
-        (7, "12:00-20:00", 8, 0, 1, 0, 0),
+        # Il turno 7 (12:00-20:00) è stato rimosso
         (8, "06-11 / 16-20", 9, 1, 1, 1, 1),
         (9, "08:00-13:00", 5, 1, 0, 0, 0),
         (10, "14:00-20:00", 6, 0, 1, 0, 0)
