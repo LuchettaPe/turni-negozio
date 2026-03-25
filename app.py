@@ -200,4 +200,33 @@ with st.sidebar:
     for i in range(int(num_richieste)):
         col1, col2, col3 = st.columns([1.5, 1, 1.5])
         with col1: dip = st.selectbox("Dip", dipendenti_list, key=f"req_dip_{i}", label_visibility="collapsed")
-        with col2: gio = st.selectbox("Gio",
+        with col2: gio = st.selectbox("Gio", giorni_list, key=f"req_gio_{i}", label_visibility="collapsed")
+        with col3: tur = st.selectbox("Turno", turni_nomi, key=f"req_tur_{i}", label_visibility="collapsed")
+        richieste_registrate.append({"dipendente": dip, "giorno": gio, "turno": tur})
+
+    st.divider()
+    avvia = st.button("Genera Algoritmo", type="primary", use_container_width=True)
+
+if avvia:
+    with st.spinner("Calcolo ottimizzazione in corso..."):
+        df, errore = calcola_turni(assenze_registrate, richieste_registrate, storico)
+        if errore:
+            st.error(errore)
+            st.session_state.df_generato = None
+        else:
+            st.session_state.df_generato = df
+
+# Se c'è una tabella generata, mostrala e offri il salvataggio
+if st.session_state.df_generato is not None:
+    st.success("✅ Turni generati e conformi alla legge sulle 11 ore.")
+    st.dataframe(st.session_state.df_generato, use_container_width=True, hide_index=True)
+    
+    colA, colB = st.columns(2)
+    with colA:
+        csv = st.session_state.df_generato.to_csv(index=False).encode('utf-8')
+        st.download_button("📥 Esporta in Excel (CSV)", data=csv, file_name='Turni.csv', mime='text/csv', use_container_width=True)
+    with colB:
+        if st.button("💾 SALVA ORARIO DEFINITIVO NEL DATABASE", type="primary", use_container_width=True):
+            salva_storico(st.session_state.df_generato)
+            st.balloons()
+            st.success("Orario salvato! La prossima settimana il sistema si ricorderà chi ha fatto chiusura questa Domenica.")
