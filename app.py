@@ -211,3 +211,24 @@ if avvia:
     with st.spinner("Calcolo ottimizzazione in corso..."):
         df, errore = calcola_turni(assenze_registrate, richieste_registrate, storico, modalita_speciale)
         if errore:
+            st.error(errore)
+            st.session_state.df_generato = None
+        else:
+            st.session_state.df_generato = df
+
+if st.session_state.df_generato is not None:
+    st.success("✅ Turni generati!")
+    if modalita_speciale:
+        st.warning("⚠️ Hai generato i turni in Modalità Speciale. I limiti di ore minime sono stati ignorati.")
+        
+    st.dataframe(st.session_state.df_generato, use_container_width=True, hide_index=True)
+    
+    colA, colB = st.columns(2)
+    with colA:
+        csv = st.session_state.df_generato.to_csv(index=False).encode('utf-8')
+        st.download_button("📥 Esporta in Excel (CSV)", data=csv, file_name='Turni.csv', mime='text/csv', use_container_width=True)
+    with colB:
+        if st.button("💾 SALVA ORARIO DEFINITIVO NEL DATABASE", type="primary", use_container_width=True):
+            salva_storico(st.session_state.df_generato)
+            st.balloons()
+            st.success("Orario salvato!")
